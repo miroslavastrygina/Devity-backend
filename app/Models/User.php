@@ -50,6 +50,15 @@ class User extends Authenticatable
         ];
     }
 
+    public function attachToGroup(int $group_id)
+    {
+        GroupMember::create([
+            'group_id' => $group_id,
+            'user_id' => $this->id,
+            'joined_at' => now()
+        ]);
+    }
+
     public function testResults()
     {
         return $this->hasMany(TestResult::class);
