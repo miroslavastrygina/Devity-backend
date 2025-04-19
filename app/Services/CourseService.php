@@ -14,7 +14,7 @@ class CourseService
 
     public function show($id)
     {
-        $course = Course::find($id);
+        $course = Course::with('block')->find($id);
 
         return $course;
     }

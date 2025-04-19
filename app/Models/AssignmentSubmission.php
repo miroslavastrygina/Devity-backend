@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class AssignmentSubmission extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'assignment_id',
         'user_id',

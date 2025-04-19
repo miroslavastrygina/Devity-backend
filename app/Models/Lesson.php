@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class Lesson extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'title',
         'content',
@@ -25,6 +28,6 @@ class Lesson extends Model
 
     public function tests()
     {
-        return $this->hasOne(Test::class);
+        return $this->hasMany(Test::class);
     }
 }

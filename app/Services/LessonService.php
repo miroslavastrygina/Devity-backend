@@ -9,12 +9,12 @@ class LessonService
 {
     public function index()
     {
-        return Lesson::all();
+        return Lesson::with(['block', 'tests'])->get();
     }
 
     public function show(int $id)
     {
-        $lesson = Lesson::find($id);
+        $lesson = Lesson::with(['block', 'tests'])->find($id);
 
         return $lesson;
     }

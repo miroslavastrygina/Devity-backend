@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class TestResult extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'question_id',
         'user_id',

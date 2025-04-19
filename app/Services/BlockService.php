@@ -9,12 +9,12 @@ class BlockService
 {
     public function index()
     {
-        return Block::all();
+        return Block::with(['course', 'lessons'])->get();
     }
 
     public function show(int $id)
     {
-        $block = Block::find($id);
+        $block = Block::with(['course', 'lessons'])->find($id);
 
         return $block;
     }
