@@ -3,8 +3,11 @@
 namespace App\Orchid\Layouts\Courses;
 
 use Orchid\Screen\TD;
+use App\Models\Course;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\DropDown;
 
 class CoursesListTable extends Table
 {
@@ -33,6 +36,21 @@ class CoursesListTable extends Table
             TD::make('description', 'Описание')->sort(),
             TD::make('created_at', 'Дата создания')->sort(),
             TD::make('updated_at', 'Дата обновления')->defaultHidden()->sort(),
+            TD::make(("Действия"))
+                ->align(TD::ALIGN_CENTER)
+                ->render(
+                    fn(Course $item) => DropDown::make()
+                        ->icon("bi.list-ul")
+                        ->list([
+                            Link::make('Изменить')
+                                ->icon("bi.pen")
+                                ->route("platform.courses.edit", $item),
+                            Button::make("Удалить")
+                                ->icon('bs.trash3')
+                                ->confirm("Вы уверены, что хотите удалить эту запись ?")
+                                ->method('delete', ["id" => $item->id]),
+                        ])
+                ),
         ];
     }
 }

@@ -20,8 +20,8 @@ class TestQuestion extends Model
         return $this->belongsTo(Test::class);
     }
 
-    public function testResults()
+    public function results()
     {
-        return $this->hasMany(TestResult::class);
+        return $this->hasMany(TestResult::class, 'question_id');
     }
 }

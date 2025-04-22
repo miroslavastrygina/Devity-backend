@@ -3,10 +3,14 @@
 namespace App\Orchid\Screens\Lessons;
 
 use App\Models\Lesson;
-use App\Orchid\Layouts\Lessons\LessonEditLayout;
-use App\Orchid\Layouts\Tests\TestListTable;
-use App\Services\LessonService;
 use Orchid\Screen\Screen;
+use App\Services\LessonService;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\Button;
+use Orchid\Support\Facades\Toast;
+use App\Http\Requests\LessonRequest;
+use App\Orchid\Layouts\Tests\TestListTable;
+use App\Orchid\Layouts\Lessons\LessonEditLayout;
 
 class LessonScreen extends Screen
 {
@@ -52,7 +56,14 @@ class LessonScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Button::make('Сохранить')
+                ->method('save'),
+            Button::make('Удалить')
+                ->method('delete'),
+            Link::make('Создать тест')
+                ->route('platform.tests.create')
+        ];
     }
 
     /**
@@ -66,5 +77,30 @@ class LessonScreen extends Screen
             LessonEditLayout::class,
             TestListTable::class
         ];
+    }
+
+    public function save(LessonRequest $request)
+    {
+        if (isset($this->lesson->id)) {
+            $this->lessonService->update($this->lesson->id, $request);
+
+            Toast::info("Урок успешно обновлен");
+        } else {
+            $newLesson = $this->lessonService->create($request);
+            Toast::info("Урок успешно создан");
+
+            return redirect()->route('platform.blocks.edit', $newLesson->block_id);
+        }
+    }
+
+    public function delete()
+    {
+        if (isset($this->lesson->id)) {
+            $block_id = $this->lesson->block_id;
+            $this->lessonService->delete($this->lesson->id);
+            Toast::info("Урок успешно удален");
+
+            return redirect()->route('platform.blocks.edit', $block_id);
+        }
     }
 }

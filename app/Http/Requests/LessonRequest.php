@@ -22,10 +22,10 @@ class LessonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|string|min:5",
-            "content" => "required|string|min:5",
-            "block_id" => "required|integer",
-            "video_url" => "nullable|string|min:5",
+            "lesson.title" => "required|string|min:5",
+            "lesson.content" => "required|string|min:5",
+            "lesson.block_id" => "required|integer",
+            "lesson.video_url" => "nullable|string|min:5",
         ];
     }
 }

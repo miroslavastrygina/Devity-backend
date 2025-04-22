@@ -22,7 +22,7 @@ class LessonService
     public function create(LessonRequest $lesson)
     {
         $lessonData = $lesson->validated();
-        $newLesson = Lesson::create($lessonData);
+        $newLesson = Lesson::create($lessonData['lesson']);
 
         return $newLesson;
     }
@@ -31,7 +31,7 @@ class LessonService
     {
         $lessonData = $lesson->validated();
         $updateLesson = $this->show($id);
-        $updateLesson->update($lessonData);
+        $updateLesson->update($lessonData['lesson']);
         $updateLesson->save();
 
         return $updateLesson;

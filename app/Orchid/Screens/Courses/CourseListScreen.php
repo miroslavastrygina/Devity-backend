@@ -2,9 +2,11 @@
 
 namespace App\Orchid\Screens\Courses;
 
-use App\Orchid\Layouts\Courses\CoursesListTable;
-use App\Services\CourseService;
 use Orchid\Screen\Screen;
+use App\Services\CourseService;
+use Orchid\Screen\Actions\Link;
+use Orchid\Support\Facades\Toast;
+use App\Orchid\Layouts\Courses\CoursesListTable;
 
 class CourseListScreen extends Screen
 {
@@ -42,7 +44,10 @@ class CourseListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make('Создать курс')
+                ->route('platform.courses.create')
+        ];
     }
 
     /**
@@ -55,5 +60,13 @@ class CourseListScreen extends Screen
         return [
             CoursesListTable::class
         ];
+    }
+
+    public function delete($id)
+    {
+        $this->courseService->delete($id);
+        Toast::info("Курс успешно удален");
+
+        return redirect()->route('platform.courses');
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Orchid\Screens\Lessons;
 
-use App\Orchid\Layouts\Lessons\LessonListTable;
-use App\Services\LessonService;
 use Orchid\Screen\Screen;
+use App\Services\LessonService;
+use Orchid\Screen\Actions\Link;
+use App\Orchid\Layouts\Lessons\LessonListTable;
 
 class LessonListScreen extends Screen
 {
@@ -43,7 +44,10 @@ class LessonListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make('Создать блок')
+                ->route('platform.lessons.create')
+        ];
     }
 
     /**

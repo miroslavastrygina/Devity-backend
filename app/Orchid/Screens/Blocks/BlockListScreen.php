@@ -2,9 +2,11 @@
 
 namespace App\Orchid\Screens\Blocks;
 
-use App\Orchid\Layouts\Blocks\BlockListTable;
-use App\Services\BlockService;
 use Orchid\Screen\Screen;
+use App\Services\BlockService;
+use Orchid\Screen\Actions\Link;
+use Orchid\Support\Facades\Toast;
+use App\Orchid\Layouts\Blocks\BlockListTable;
 
 class BlockListScreen extends Screen
 {
@@ -42,7 +44,10 @@ class BlockListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make('Создать блок')
+                ->route('platform.blocks.create')
+        ];
     }
 
     /**
@@ -55,5 +60,13 @@ class BlockListScreen extends Screen
         return [
             BlockListTable::class
         ];
+    }
+
+    public function delete($id)
+    {
+        $this->blockService->delete($id);
+        Toast::info("Блок успешно удален");
+
+        return redirect()->route('platform.blocks');
     }
 }

@@ -21,6 +21,8 @@ use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\TestQuestion\TestQuestionListScreen;
+use App\Orchid\Screens\TestQuestion\TestQuestionScreen;
+use App\Orchid\Screens\Tests\TestScreen;
 use App\Orchid\Screens\Tests\TestsListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
@@ -153,11 +155,26 @@ Route::screen('/tests', TestsListScreen::class)
     ->name('platform.tests')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
+Route::screen('/tests/edit/{id}', TestScreen::class)
+    ->name('platform.tests.edit')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/tests/create', TestScreen::class)
+    ->name('platform.tests.create')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
 
 Route::screen('/tests-question', TestQuestionListScreen::class)
     ->name('platform.tests-question')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
-
+Route::screen('/tests-question/edit/{id}', TestQuestionScreen::class)
+    ->name('platform.tests-question.edit')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/tests-question/create', TestQuestionScreen::class)
+    ->name('platform.tests-question.create')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
 
 // Route::screen('idea', Idea::class, 'platform.screens.idea');

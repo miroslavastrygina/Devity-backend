@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Orchid\Layouts\Tests;
+namespace App\Orchid\Layouts\TestQuestions;
 
 use Orchid\Screen\TD;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 
-class TestListTable extends Table
+class TestQuestionListTable extends Table
 {
     /**
      * Data source.
@@ -16,7 +16,7 @@ class TestListTable extends Table
      *
      * @var string
      */
-    protected $target = 'tests';
+    protected $target = 'questions';
 
     /**
      * Get the table cells to be displayed.
@@ -27,12 +27,10 @@ class TestListTable extends Table
     {
         return [
             TD::make('id', 'ID')->sort(),
-            TD::make('title', 'Название теста')->render(function ($item) {
-                return Link::make($item->title)->route('platform.tests.edit', $item->id);
+            TD::make('question', 'Вопрос')->render(function ($item) {
+                return Link::make($item->question)->route('platform.tests-question.edit', $item->id);
             })->sort(),
-            TD::make('lesson', 'Урок')->render(function ($item) {
-                return Link::make($item->lesson->title)->route('platform.lessons.edit', $item->lesson->id);
-            })->defaultHidden()->sort(),
+            TD::make('answer', 'Ответ')->sort(),
             TD::make('created_at', 'Дата создания')->sort(),
             TD::make('updated_at', 'Дата обновления')->defaultHidden()->sort(),
         ];

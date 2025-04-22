@@ -22,7 +22,7 @@ class BlockService
     public function create(BlockRequest $block)
     {
         $blockData = $block->validated();
-        $newBlock = Block::create($blockData);
+        $newBlock = Block::create($blockData['block']);
 
         return $newBlock;
     }
@@ -31,7 +31,7 @@ class BlockService
     {
         $blockData = $block->validated();
         $updateBlock = $this->show($id);
-        $updateBlock->update($blockData);
+        $updateBlock->update($blockData['block']);
         $updateBlock->save();
 
         return $updateBlock;

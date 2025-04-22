@@ -9,12 +9,12 @@ class TestQuestionService
 {
     public function index()
     {
-        return TestQuestion::all();
+        return TestQuestion::with(['test', 'results'])->get();
     }
 
     public function show(int $id)
     {
-        $testQuestion = TestQuestion::find($id);
+        $testQuestion = TestQuestion::with(['test', 'results'])->find($id);
 
         return $testQuestion;
     }
@@ -22,7 +22,7 @@ class TestQuestionService
     public function create(TestQuestionRequest $testQuestion)
     {
         $testQuestionData = $testQuestion->validated();
-        $newTestQuestion = TestQuestion::create($testQuestionData);
+        $newTestQuestion = TestQuestion::create($testQuestionData['testQuestion']);
 
         return $newTestQuestion;
     }
@@ -31,7 +31,7 @@ class TestQuestionService
     {
         $testQuestionData = $testQuestion->validated();
         $updateTestQuestion = $this->show($id);
-        $updateTestQuestion->update($testQuestionData);
+        $updateTestQuestion->update($testQuestionData['testQuestion']);
         $updateTestQuestion->save();
 
         return $updateTestQuestion;

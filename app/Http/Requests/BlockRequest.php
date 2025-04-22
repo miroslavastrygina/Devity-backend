@@ -22,9 +22,9 @@ class BlockRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|string|min:5",
-            "description" => "required|string|min:5",
-            "course_id" => "required|integer"
+            "block.title" => "required|string|min:5",
+            "block.description" => "required|string|min:5",
+            "block.course_id" => "required|integer"
         ];
     }
 }

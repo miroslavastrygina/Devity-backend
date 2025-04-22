@@ -3,6 +3,7 @@
 namespace App\Orchid\Layouts\Lessons;
 
 use App\Models\Block;
+use Illuminate\Database\Eloquent\Relations\Relation as RelationsRelation;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Relation;
@@ -31,7 +32,7 @@ class LessonEditLayout extends Rows
                 ->title('Блок')
                 ->fromModel(Block::class, 'title'),
             Input::make('lesson.video_url')->title('Ссылка для видео')->type('url'),
-            SimpleMDE::make('lesson.content')->title('Контент урока')
+            SimpleMDE::make('lesson.content')->title('Контент урока'),
         ];
     }
 }
