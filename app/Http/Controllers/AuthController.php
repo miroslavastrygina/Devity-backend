@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 
@@ -13,6 +14,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $loginRequest)
     {
+        Log::info($loginRequest->all());
         $validationData = $loginRequest->validated();
         $user = User::where("email", $validationData['login'])->first();
 
@@ -22,7 +24,7 @@ class AuthController extends Controller
         ) {
             $token = $user->createToken("auth_token")->plainTextToken;
 
-            return $token;
+            return response()->json(["token" => $token]);
         }
 
         throw new Exception("Неверный пароль", 401);

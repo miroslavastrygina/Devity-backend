@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Orchid\Screen\AsSource;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
@@ -10,7 +11,7 @@ use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use AsSource;
+    use AsSource, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
