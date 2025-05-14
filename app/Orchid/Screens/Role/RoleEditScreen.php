@@ -40,7 +40,7 @@ class RoleEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Edit Role';
+        return 'Редактирование роли';
     }
 
     /**
@@ -48,7 +48,7 @@ class RoleEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Modify the privileges and permissions associated with a specific role.';
+        return 'Измените привилегии и разрешения, связанные с определенной ролью.';
     }
 
     /**
@@ -69,11 +69,11 @@ class RoleEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Save'))
+            Button::make('Сохранить')
                 ->icon('bs.check-circle')
                 ->method('save'),
 
-            Button::make(__('Remove'))
+            Button::make('Удалить')
                 ->icon('bs.trash3')
                 ->method('remove')
                 ->canSee($this->role->exists),
@@ -91,14 +91,14 @@ class RoleEditScreen extends Screen
             Layout::block([
                 RoleEditLayout::class,
             ])
-                ->title('Role')
-                ->description('Defines a set of privileges that grant users access to various services and allow them to perform specific tasks or operations.'),
+                ->title('Роли')
+                ->description('Определяет набор привилегий, которые предоставляют пользователям доступ к различным службам и позволяют им выполнять определенные задачи или операции.'),
 
             Layout::block([
                 RolePermissionLayout::class,
             ])
-                ->title('Permission/Privilege')
-                ->description('A privilege is necessary to perform certain tasks and operations in an area.'),
+                ->title('Разрешения/Привилегии')
+                ->description('Привилегия необходима для выполнения определенных задач и операций в определенной области.'),
         ];
     }
 
@@ -118,13 +118,13 @@ class RoleEditScreen extends Screen
         $role->fill($request->get('role'));
 
         $role->permissions = collect($request->get('permissions'))
-            ->map(fn ($value, $key) => [base64_decode($key) => $value])
+            ->map(fn($value, $key) => [base64_decode($key) => $value])
             ->collapse()
             ->toArray();
 
         $role->save();
 
-        Toast::info(__('Role was saved'));
+        Toast::info('Роль была сохранена');
 
         return redirect()->route('platform.systems.roles');
     }
@@ -138,7 +138,7 @@ class RoleEditScreen extends Screen
     {
         $role->delete();
 
-        Toast::info(__('Role was removed'));
+        Toast::info('Роль была удалена');
 
         return redirect()->route('platform.systems.roles');
     }

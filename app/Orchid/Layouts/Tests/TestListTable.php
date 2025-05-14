@@ -33,6 +33,11 @@ class TestListTable extends Table
             TD::make('lesson', 'Урок')->render(function ($item) {
                 return Link::make($item->lesson->title)->route('platform.lessons.edit', $item->lesson->id);
             })->defaultHidden()->sort(),
+            TD::make('timer', 'Время на прохождение')->render(function ($item) {
+                $minutes = floor($item->timer);
+                $seconds = round(($item->timer - $minutes) * 60);
+                return "{$minutes} мин {$seconds} сек";
+            })->sort(),
             TD::make('created_at', 'Дата создания')->sort(),
             TD::make('updated_at', 'Дата обновления')->defaultHidden()->sort(),
         ];

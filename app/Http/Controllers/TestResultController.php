@@ -47,10 +47,10 @@ class TestResultController extends Controller
     public function create(TestResultRequest $request)
     {
         try {
-            $newTestResult = $this->testResultService->create($request);
+            $result = $this->testResultService->create($request);
             return response()->json([
                 "success" => true,
-                "data" => $newTestResult
+                "data" => $result
             ]);
         } catch (Exception $e) {
             return response()->json([

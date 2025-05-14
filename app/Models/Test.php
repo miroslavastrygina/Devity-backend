@@ -11,7 +11,8 @@ class Test extends Model
 
     protected $fillable = [
         'title',
-        'lesson_id'
+        'lesson_id',
+        'timer'
     ];
 
     public function lesson()
@@ -22,5 +23,10 @@ class Test extends Model
     public function testQuestions()
     {
         return $this->hasMany(TestQuestion::class);
+    }
+
+    public function testUserResults()
+    {
+        return $this->hasMany(TestUserResult::class);
     }
 }

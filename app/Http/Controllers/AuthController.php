@@ -32,7 +32,9 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $registerRequest)
     {
-        $user = User::create($registerRequest->validated());
+        $registerData = $registerRequest->validated();
+        $registerData['password'] = Hash::make($registerData['password']);
+        $user = User::create($registerData);
         $token = $user->createToken("auth_token")->plainTextToken;
         return response()->json([
             "user" => $user,

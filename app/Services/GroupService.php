@@ -14,7 +14,7 @@ class GroupService
 
     public function show(int $id)
     {
-        $group = Group::find($id);
+        $group = Group::with(['members.user'])->find($id);
 
         return $group;
     }
@@ -22,7 +22,7 @@ class GroupService
     public function create(GroupRequest $group)
     {
         $groupData = $group->validated();
-        $newGroup = Group::create($groupData);
+        $newGroup = Group::create($groupData['group']);
 
         return $newGroup;
     }
@@ -31,7 +31,7 @@ class GroupService
     {
         $groupData = $group->validated();
         $updateGroup = $this->show($id);
-        $updateGroup->update($groupData);
+        $updateGroup->update($groupData['group']);
         $updateGroup->save();
 
         return $updateGroup;

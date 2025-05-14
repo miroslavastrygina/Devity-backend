@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('surname')->nullable()->change();
-            $table->string('patronymic')->nullable()->change();
-            $table->string('phone')->nullable()->change();
-            $table->json('permissions')->nullable();
+            // $table->string('surname')->nullable()->change();
+            // $table->string('patronymic')->nullable()->change();
+            // $table->string('phone')->nullable()->change();
+            // $table->json('permissions')->nullable();
         });
     }
 
@@ -25,10 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('surname')->change();
-            $table->string('patronymic')->change();
-            $table->string('phone')->change();
-            $table->dropColumn('permissions');
+            // $table->string('surname')->change();
+            // $table->string('patronymic')->change();
+            // $table->string('phone')->change();
+            // $table->dropColumn('permissions');
         });
     }
 };

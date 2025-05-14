@@ -15,6 +15,8 @@ use App\Orchid\Screens\Examples\ExampleGridScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Groups\GroupEditScreen;
+use App\Orchid\Screens\Groups\GroupListScreen;
 use App\Orchid\Screens\Lessons\LessonListScreen;
 use App\Orchid\Screens\Lessons\LessonScreen;
 use App\Orchid\Screens\PlatformScreen;
@@ -85,14 +87,14 @@ Route::screen('roles/create', RoleEditScreen::class)
     ->name('platform.systems.roles.create')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.systems.roles')
-        ->push(__('Create'), route('platform.systems.roles.create')));
+        ->push(__('Роли'), route('platform.systems.roles.create')));
 
 // Platform > System > Roles
 Route::screen('roles', RoleListScreen::class)
     ->name('platform.systems.roles')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index')
-        ->push(__('Roles'), route('platform.systems.roles')));
+        ->push(__('Роли'), route('platform.systems.roles')));
 
 // Example...
 Route::screen('example', ExampleScreen::class)
@@ -177,4 +179,16 @@ Route::screen('/tests-question/create', TestQuestionScreen::class)
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
 
+Route::screen('/groups', GroupListScreen::class)
+    ->name('platform.groups')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/groups/edit/{id}', GroupEditScreen::class)
+    ->name('platform.groups.edit')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/groups/create', GroupEditScreen::class)
+    ->name('platform.groups.create')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
 // Route::screen('idea', Idea::class, 'platform.screens.idea');

@@ -9,12 +9,12 @@ class TestService
 {
     public function index()
     {
-        return Test::all();
+        return Test::with(['lesson', 'testQuestions'])->get();
     }
 
     public function show(int $id)
     {
-        $test = Test::find($id);
+        $test = Test::find($id)->with(['testQuestions'])->first();
 
         return $test;
     }

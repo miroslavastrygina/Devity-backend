@@ -26,6 +26,7 @@ class TestEditLayout extends Rows
     {
         return [
             Input::make('test.title')->title('Заголовок'),
+            Input::make('test.timer')->step(0.01)->type('number')->title('Время теста (в минутах!)'),
             Relation::make('test.lesson_id')
                 ->title('Урок')
                 ->fromModel(Lesson::class, 'title')

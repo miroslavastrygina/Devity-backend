@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder;
 use Orchid\Screen\AsSource;
+use App\Models\TestUserResult;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
+use Laravel\Sanctum\HasApiTokens;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
 
@@ -20,6 +22,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
+        'phone',
         'email',
         'password',
     ];
@@ -70,4 +75,19 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopePermission(Builder $query)
+    {
+        return $query->whereNull('permissions');  // лучше использовать whereNull
+    }
+
+    public function testUserResults()
+    {
+        return $this->hasMany(TestUserResult::class);
+    }
 }

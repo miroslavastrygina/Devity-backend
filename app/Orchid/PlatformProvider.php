@@ -37,18 +37,24 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Курсы')
                 ->icon('journal')
                 ->route('platform.courses'),
+            Menu::make('Роли')
+                ->icon('gear')
+                ->route('platform.systems.roles'),
             Menu::make('Блоки')
                 ->icon('boxes')
                 ->route('platform.blocks'),
             Menu::make('Уроки')
                 ->icon('journal-bookmark')
                 ->route('platform.lessons'),
-            Menu::make('Тесты')
-                ->icon('clipboard2-minus')
-                ->route('platform.tests'),
-            Menu::make('Вопросы теста')
-                ->icon('question-square')
-                ->route('platform.tests-question')
+            Menu::make('Группы')
+                ->icon('people')
+                ->route('platform.groups'),
+            // Menu::make('Тесты')
+            //     ->icon('clipboard2-minus')
+            //     ->route('platform.tests'),
+            // Menu::make('Вопросы теста')
+            //     ->icon('question-square')
+            //     ->route('platform.tests-question')
         ];
     }
 

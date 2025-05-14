@@ -9,7 +9,7 @@ class CourseService
 {
     public function index()
     {
-        return Course::all();
+        return Course::with('block')->get();
     }
 
     public function show($id)
