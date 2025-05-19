@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Layouts\Assignment\AssignmentTable;
+use App\Orchid\Screens\Assignment\AssignmentListScreen;
+use App\Orchid\Screens\Assignment\AssignmentScreen;
 use App\Orchid\Screens\Blocks\BlockListScreen;
 use App\Orchid\Screens\Blocks\BlockScreen;
 use App\Orchid\Screens\Courses\CourseListScreen;
@@ -163,6 +166,19 @@ Route::screen('/tests/edit/{id}', TestScreen::class)
         ->parent('platform.index'));
 Route::screen('/tests/create', TestScreen::class)
     ->name('platform.tests.create')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+
+Route::screen('/assignments', AssignmentListScreen::class)
+    ->name('platform.assignments')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/assignments/edit/{id}', AssignmentScreen::class)
+    ->name('platform.assignments.edit')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/assignments/create', AssignmentScreen::class)
+    ->name('platform.assignments.create')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
 

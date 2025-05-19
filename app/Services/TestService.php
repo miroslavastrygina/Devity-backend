@@ -14,7 +14,7 @@ class TestService
 
     public function show(int $id)
     {
-        $test = Test::find($id)->with(['testQuestions'])->first();
+        $test = Test::with(['testQuestions'])->find($id);
 
         return $test;
     }

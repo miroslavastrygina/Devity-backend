@@ -8,9 +8,11 @@ use App\Services\LessonService;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
+use Orchid\Support\Facades\Layout;
 use App\Http\Requests\LessonRequest;
 use App\Orchid\Layouts\Tests\TestListTable;
 use App\Orchid\Layouts\Lessons\LessonEditLayout;
+use App\Orchid\Layouts\Assignment\AssignmentTable;
 
 class LessonScreen extends Screen
 {
@@ -35,7 +37,8 @@ class LessonScreen extends Screen
 
         return [
             'lesson' => $this->lesson,
-            'tests' => $this->lesson->tests
+            'tests' => $this->lesson->tests,
+            'assignments' => $this->lesson->assignments
         ];
     }
 
@@ -62,7 +65,9 @@ class LessonScreen extends Screen
             Button::make('Удалить')
                 ->method('delete'),
             Link::make('Создать тест')
-                ->route('platform.tests.create')
+                ->route('platform.tests.create'),
+            Link::make('Создать задание')
+                ->route('platform.assignments.create')
         ];
     }
 
@@ -75,7 +80,10 @@ class LessonScreen extends Screen
     {
         return [
             LessonEditLayout::class,
-            TestListTable::class
+            Layout::split([
+                TestListTable::class,
+                AssignmentTable::class
+            ])->ratio('50/50')->reverseOnPhone(),
         ];
     }
 

@@ -4,12 +4,18 @@ namespace App\Services;
 
 use App\Models\Lesson;
 use App\Http\Requests\LessonRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LessonService
 {
     public function index()
     {
-        return Lesson::with(['block', 'tests'])->get();
+        $withArr = ['block', 'tests'];
+        if (count(Auth::user()->groups) > 0) {
+            $withArr[] = 'assignments';
+        }
+
+        return Lesson::with($withArr)->get();
     }
 
     public function show(int $id)

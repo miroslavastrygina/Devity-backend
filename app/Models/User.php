@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\GroupMember;
 use Orchid\Screen\AsSource;
 use App\Models\TestUserResult;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
 
@@ -89,5 +90,10 @@ class User extends Authenticatable
     public function testUserResults()
     {
         return $this->hasMany(TestUserResult::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members');
     }
 }

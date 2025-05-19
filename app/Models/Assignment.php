@@ -11,7 +11,8 @@ class Assignment extends Model
 
     protected $fillable = [
         'lesson_id',
-        'description'
+        'description',
+        'title'
     ];
 
     public function lesson()

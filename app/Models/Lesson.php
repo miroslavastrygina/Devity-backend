@@ -23,7 +23,7 @@ class Lesson extends Model
 
     public function assignments()
     {
-        return $this->hasOne(Assignment::class);
+        return $this->hasMany(Assignment::class);
     }
 
     public function tests()
