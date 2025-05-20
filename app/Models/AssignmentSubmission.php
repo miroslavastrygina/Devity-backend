@@ -13,7 +13,8 @@ class AssignmentSubmission extends Model
         'assignment_id',
         'user_id',
         'file_url',
-        'submitted_at'
+        'submitted_at',
+        'rated'
     ];
 
     public function assignment()

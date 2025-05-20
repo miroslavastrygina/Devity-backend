@@ -2,39 +2,41 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Layouts\Assignment\AssignmentTable;
-use App\Orchid\Screens\Assignment\AssignmentListScreen;
-use App\Orchid\Screens\Assignment\AssignmentScreen;
-use App\Orchid\Screens\Blocks\BlockListScreen;
-use App\Orchid\Screens\Blocks\BlockScreen;
-use App\Orchid\Screens\Courses\CourseListScreen;
-use App\Orchid\Screens\Courses\CourseScreen;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleGridScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
-use App\Orchid\Screens\Groups\GroupEditScreen;
-use App\Orchid\Screens\Groups\GroupListScreen;
-use App\Orchid\Screens\Lessons\LessonListScreen;
-use App\Orchid\Screens\Lessons\LessonScreen;
+use Tabuna\Breadcrumbs\Trail;
+use Illuminate\Support\Facades\Route;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Tests\TestScreen;
+use App\Orchid\Screens\Blocks\BlockScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
-use App\Orchid\Screens\Statistic\StatisticScreen;
-use App\Orchid\Screens\TestQuestion\TestQuestionListScreen;
-use App\Orchid\Screens\TestQuestion\TestQuestionScreen;
-use App\Orchid\Screens\Tests\TestScreen;
-use App\Orchid\Screens\Tests\TestsListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
+use App\Orchid\Screens\Courses\CourseScreen;
+use App\Orchid\Screens\Lessons\LessonScreen;
+use App\Orchid\Screens\Tests\TestsListScreen;
+use App\Orchid\Screens\Blocks\BlockListScreen;
+use App\Orchid\Screens\Examples\ExampleScreen;
+use App\Orchid\Screens\Groups\GroupEditScreen;
+use App\Orchid\Screens\Groups\GroupListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
-use Illuminate\Support\Facades\Route;
-use Tabuna\Breadcrumbs\Trail;
+use App\Orchid\Screens\Courses\CourseListScreen;
+use App\Orchid\Screens\Lessons\LessonListScreen;
+use App\Orchid\Screens\Statistic\StatisticScreen;
+use App\Orchid\Layouts\Assignment\AssignmentTable;
+use App\Orchid\Screens\Examples\ExampleGridScreen;
+use App\Orchid\Screens\Assignment\AssignmentScreen;
+use App\Orchid\Screens\Examples\ExampleCardsScreen;
+use App\Orchid\Screens\Examples\ExampleChartsScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsScreen;
+use App\Orchid\Screens\Examples\ExampleActionsScreen;
+use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
+use App\Orchid\Screens\Assignment\AssignmentListScreen;
+use App\Orchid\Screens\Teacher\TeacherAssignmentScreen;
+use App\Orchid\Screens\TestQuestion\TestQuestionScreen;
+use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Teacher\AssignmentSubmissionScreen;
+use App\Orchid\Screens\TestQuestion\TestQuestionListScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,6 +213,15 @@ Route::screen('/groups/create', GroupEditScreen::class)
 
 Route::screen('/statistic', StatisticScreen::class)
     ->name('platform.statistics')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+
+Route::screen('/assignment-submissions', TeacherAssignmentScreen::class)
+    ->name('platform.assignment-submissions')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/assignment-submissions-view/{id}', AssignmentSubmissionScreen::class)
+    ->name('platform.assignment-submissions-view')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
 // Route::screen('idea', Idea::class, 'platform.screens.idea');

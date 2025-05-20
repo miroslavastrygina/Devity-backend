@@ -7,13 +7,20 @@ use App\Models\AssignmentSubmission;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\AssignmentRequest;
 use App\Http\Requests\AssignmentSubmissionRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentSubmissionService
 {
     public function index()
     {
-        return AssignmentSubmission::with(['assignment', 'user.groups'])->get();
+        return AssignmentSubmission::with(['assignment', 'user.groups'])
+            ->where('rated', false) // только неоценённые
+            ->whereHas('user.groups', function ($query) {
+                $query->where('teacher_id', Auth::id()); 
+            })
+            ->get();
     }
+    
 
     public function show(int $id)
     {

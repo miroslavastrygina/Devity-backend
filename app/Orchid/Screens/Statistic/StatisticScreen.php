@@ -101,7 +101,7 @@ class StatisticScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'StatisticScreen';
+        return 'Статистика по вашим группам';
     }
 
     /**
