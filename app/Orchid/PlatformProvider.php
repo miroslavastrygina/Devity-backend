@@ -36,31 +36,38 @@ class PlatformProvider extends OrchidServiceProvider
         return [
             Menu::make('Курсы')
                 ->icon('journal')
-                ->route('platform.courses'),
-            Menu::make('Роли')
-                ->icon('gear')
-                ->route('platform.systems.roles'),
+                ->route('platform.courses')
+                ->permission('platform.courses'),
             Menu::make('Блоки')
                 ->icon('boxes')
-                ->route('platform.blocks'),
+                ->route('platform.blocks')
+                ->permission('platform.blocks'),
             Menu::make('Уроки')
                 ->icon('journal-bookmark')
-                ->route('platform.lessons'),
+                ->route('platform.lessons')
+                ->permission('platform.lessons'),
             Menu::make('Группы')
                 ->icon('people')
-                ->route('platform.groups'),
+                ->route('platform.groups')
+                ->permission('platform.groups'),
             Menu::make('Статистика')
                 ->icon('pie-chart')
-                ->route('platform.statistics'),
+                ->route('platform.statistics')
+                ->permission('platform.statistics'),
             Menu::make('Задания на проверку')
                 ->icon('check2-circle')
-                ->route('platform.assignment-submissions'),
-            // Menu::make('Тесты')
-            //     ->icon('clipboard2-minus')
-            //     ->route('platform.tests'),
-            // Menu::make('Вопросы теста')
-            //     ->icon('question-square')
-            //     ->route('platform.tests-question')
+                ->route('platform.assignment-submissions')
+                ->permission('platform.assignment-submissions'),
+            Menu::make('Управление')
+                ->icon('code')
+                ->list([
+                    Menu::make('Пользователи')
+                        ->icon('heart')
+                        ->route('platform.systems.users'),
+                    Menu::make('Роли')
+                        ->icon('gear')
+                        ->route('platform.systems.roles'),
+                ])->permission('platform.systems.roles'),
         ];
     }
 
@@ -75,6 +82,16 @@ class PlatformProvider extends OrchidServiceProvider
             ItemPermission::group(__('System'))
                 ->addPermission('platform.systems.roles', __('Roles'))
                 ->addPermission('platform.systems.users', __('Users')),
+
+            ItemPermission::group("Учитель")
+                ->addPermission('platform.groups', 'Группы')
+                ->addPermission("platform.statistics", "Статистика")
+                ->addPermission("platform.assignment-submissions", "Проверка"),
+
+            ItemPermission::group("Управление")
+                ->addPermission('platform.courses', 'Курсы')
+                ->addPermission("platform.blocks", "Блоки")
+                ->addPermission("platform.lessons", "Уроки")
         ];
     }
 }

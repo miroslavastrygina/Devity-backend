@@ -14,13 +14,13 @@ class AssignmentSubmissionService
     public function index()
     {
         return AssignmentSubmission::with(['assignment', 'user.groups'])
-            ->where('rated', false) // только неоценённые
+            ->where('rated', false)
             ->whereHas('user.groups', function ($query) {
-                $query->where('teacher_id', Auth::id()); 
+                $query->where('teacher_id', Auth::id());
             })
             ->get();
     }
-    
+
 
     public function show(int $id)
     {
