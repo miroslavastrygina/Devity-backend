@@ -25,6 +25,7 @@ use App\Orchid\Screens\Lessons\LessonScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
+use App\Orchid\Screens\Statistic\StatisticScreen;
 use App\Orchid\Screens\TestQuestion\TestQuestionListScreen;
 use App\Orchid\Screens\TestQuestion\TestQuestionScreen;
 use App\Orchid\Screens\Tests\TestScreen;
@@ -205,6 +206,11 @@ Route::screen('/groups/edit/{id}', GroupEditScreen::class)
         ->parent('platform.index'));
 Route::screen('/groups/create', GroupEditScreen::class)
     ->name('platform.groups.create')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+
+Route::screen('/statistic', StatisticScreen::class)
+    ->name('platform.statistics')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
 // Route::screen('idea', Idea::class, 'platform.screens.idea');

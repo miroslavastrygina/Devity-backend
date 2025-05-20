@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Models\Test;
 use App\Models\User;
 use Orchid\Screen\AsSource;
+use Orchid\Metrics\Chartable;
 use Illuminate\Database\Eloquent\Model;
 
 class TestUserResult extends Model
 {
-    use AsSource;
+    use AsSource, Chartable;
 
     protected $fillable = [
         'test_id',

@@ -17,6 +17,7 @@ use Orchid\Screen\Fields\Relation;
 use Orchid\Support\Facades\Layout;
 use App\Http\Requests\GroupRequest;
 use App\Services\GroupMemberService;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\ModalToggle;
 use App\Http\Requests\GroupMemberRequest;
 use App\Orchid\Layouts\Groups\GroupEditLayout;
@@ -42,6 +43,7 @@ class GroupEditScreen extends Screen
             $this->group = $this->groupService->show($id);
         } else {
             $this->group = new Group();
+            $this->group->teacher_id = Auth::id();
         }
 
         return [

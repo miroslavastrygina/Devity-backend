@@ -23,7 +23,8 @@ class GroupRequest extends FormRequest
     {
         return [
             "group.name" => "required|string|min:5",
-            "group.description" => "required|string|min:5"
+            "group.description" => "required|string|min:5",
+            "group.teacher_id" => "required|exists:users,id"
         ];
     }
 }

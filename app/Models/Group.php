@@ -11,11 +11,17 @@ class Group extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'teacher_id'
     ];
 
     public function members()
     {
         return $this->hasMany(GroupMember::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class);
     }
 }

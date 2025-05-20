@@ -31,6 +31,9 @@ class GroupListTable extends Table
                 return Link::make($item->name)->route('platform.groups.edit', $item->id);
             })->sort(),
             TD::make('description', 'Описание')->sort(),
+            TD::make('teacher_id', 'Учитель')->render(function ($item) {
+                return $item->teacher->email;
+            })->sort(),
             TD::make('created_at', 'Дата создания')->sort(),
             TD::make('updated_at', 'Дата обновления')->defaultHidden()->sort(),
         ];

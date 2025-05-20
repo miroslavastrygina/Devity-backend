@@ -25,6 +25,7 @@ class GroupEditLayout extends Rows
         return [
             Input::make('group.name')->title('Название'),
             Input::make('group.description')->title('Описание'),
+            Input::make('group.teacher_id')->hidden(),
         ];
     }
 }

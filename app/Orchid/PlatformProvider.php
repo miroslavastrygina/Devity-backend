@@ -49,6 +49,9 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Группы')
                 ->icon('people')
                 ->route('platform.groups'),
+            Menu::make('Статистика')
+                ->icon('pie-chart')
+                ->route('platform.statistics'),
             // Menu::make('Тесты')
             //     ->icon('clipboard2-minus')
             //     ->route('platform.tests'),
