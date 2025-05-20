@@ -103,5 +103,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', 'delete');
         Route::put('/{id}', 'update');
         Route::post('/create', 'create');
+        Route::get(
+            '/grades-by-student/{id}',
+            'getGradesByStudent'
+        );
     });
 });

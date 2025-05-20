@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\Request;
+use App\Models\AssignmentGrade;
 use App\Services\AssignmentSubmissionService;
 use App\Http\Requests\AssignmentSubmissionRequest;
 
@@ -17,6 +19,26 @@ class AssignmentSubmissionController extends Controller
             return response()->json([
                 "success" => true,
                 "data" => $assignmentsSubmission
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success" => false,
+                "msg" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getGradesByStudent(int $id)
+    {
+        try {
+            $grades = AssignmentGrade::whereHas('submission', function ($query) use ($id) {
+                $query->where('user_id', $id);
+            })
+                ->with(['submission.assignment', 'teacher'])
+                ->get();
+            return response()->json([
+                "success" => true,
+                "data" => $grades
             ]);
         } catch (Exception $e) {
             return response()->json([

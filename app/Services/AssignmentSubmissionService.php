@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Models\Assignment;
+use Illuminate\Http\Request;
+use App\Models\AssignmentGrade;
 use App\Models\AssignmentSubmission;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\AssignmentRequest;
 use App\Http\Requests\AssignmentSubmissionRequest;
-use Illuminate\Support\Facades\Auth;
 
 class AssignmentSubmissionService
 {
@@ -21,6 +23,19 @@ class AssignmentSubmissionService
             ->get();
     }
 
+    public function getGradesByStudent(Request $request)
+    {
+        $userId = $request->query('user_id'); // Получаем user_id из параметра запроса
+
+        // Получаем все оценки, где submission принадлежит нужному пользователю
+        $grades = AssignmentGrade::whereHas('submission', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+            ->with(['submission', 'teacher'])
+            ->get();
+
+        return response()->json($grades);
+    }
 
     public function show(int $id)
     {
