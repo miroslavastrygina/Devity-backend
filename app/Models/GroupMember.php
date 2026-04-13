@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class GroupMember extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'group_id',
         'user_id',

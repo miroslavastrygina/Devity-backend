@@ -22,8 +22,9 @@ class GroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string|min:5",
-            "description" => "required|string|min:5"
+            "group.name" => "required|string|min:5",
+            "group.description" => "required|string|min:5",
+            "group.teacher_id" => "required|exists:users,id"
         ];
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class TestQuestion extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'test_id',
         'question',
@@ -17,8 +20,8 @@ class TestQuestion extends Model
         return $this->belongsTo(Test::class);
     }
 
-    public function testResults()
+    public function results()
     {
-        return $this->hasMany(TestResult::class);
+        return $this->hasMany(TestResult::class, 'question_id');
     }
 }

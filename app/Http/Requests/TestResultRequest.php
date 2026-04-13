@@ -22,9 +22,10 @@ class TestResultRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'question_id' => 'required|integer',
-            'user_id' => 'required|integer',
-            'user_answer' => 'string|required'
+            'question' => 'nullable|array',
+            'question.*.question_id' => 'integer',
+            'question.*.user_id' => 'integer',
+            'question.*.user_answer' => 'string',
         ];
     }
 }

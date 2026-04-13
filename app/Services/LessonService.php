@@ -4,17 +4,23 @@ namespace App\Services;
 
 use App\Models\Lesson;
 use App\Http\Requests\LessonRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LessonService
 {
     public function index()
     {
-        return Lesson::all();
+        $withArr = ['block', 'tests'];
+        if (count(Auth::user()->groups) > 0) {
+            $withArr[] = 'assignments';
+        }
+
+        return Lesson::with($withArr)->get();
     }
 
     public function show(int $id)
     {
-        $lesson = Lesson::find($id);
+        $lesson = Lesson::with(['block', 'tests'])->find($id);
 
         return $lesson;
     }
@@ -22,7 +28,7 @@ class LessonService
     public function create(LessonRequest $lesson)
     {
         $lessonData = $lesson->validated();
-        $newLesson = Lesson::create($lessonData);
+        $newLesson = Lesson::create($lessonData['lesson']);
 
         return $newLesson;
     }
@@ -31,7 +37,7 @@ class LessonService
     {
         $lessonData = $lesson->validated();
         $updateLesson = $this->show($id);
-        $updateLesson->update($lessonData);
+        $updateLesson->update($lessonData['lesson']);
         $updateLesson->save();
 
         return $updateLesson;

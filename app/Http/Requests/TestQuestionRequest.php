@@ -22,9 +22,9 @@ class TestQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'test_id' => 'required|integer',
-            'question' => 'required|string',
-            'answer' => 'required|string'
+            'testQuestion.test_id' => 'required|integer',
+            'testQuestion.question' => 'required|string',
+            'testQuestion.answer' => 'required|string'
         ];
     }
 }

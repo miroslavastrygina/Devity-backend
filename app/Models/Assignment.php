@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
 class Assignment extends Model
 {
+    use AsSource;
+
     protected $fillable = [
         'lesson_id',
-        'description'
+        'description',
+        'title'
     ];
 
     public function lesson()

@@ -9,12 +9,12 @@ class CourseService
 {
     public function index()
     {
-        return Course::all();
+        return Course::with('block')->get();
     }
 
     public function show($id)
     {
-        $course = Course::find($id);
+        $course = Course::with('block')->find($id);
 
         return $course;
     }
@@ -22,7 +22,7 @@ class CourseService
     public function create(CourseRequest $course)
     {
         $courseData = $course->validated();
-        $newCourse = Course::create($courseData);
+        $newCourse = Course::create($courseData['course']);
 
         return $newCourse;
     }
@@ -31,7 +31,7 @@ class CourseService
     {
         $courseData = $course->validated();
         $updateCourse = $this->show($id);
-        $updateCourse->update($courseData);
+        $updateCourse->update($courseData['course']);
         $updateCourse->save();
 
         return $updateCourse;

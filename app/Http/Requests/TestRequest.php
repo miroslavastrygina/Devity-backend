@@ -22,8 +22,9 @@ class TestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'lesson_id' => 'required|exists:lessons,id',
+            'test.title' => 'required|string|max:255',
+            'test.lesson_id' => 'required|exists:lessons,id',
+            'test.timer' => 'numeric|min:0.1',
         ];
     }
 }
