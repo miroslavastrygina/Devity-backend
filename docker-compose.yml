@@ -17,6 +17,7 @@ services:
     networks:
       - my-network
     environment:
+      DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: devityDB
@@ -24,20 +25,22 @@ services:
       DB_PASSWORD: test1234
     command: php artisan serve --host=0.0.0.0 --port=8080
 
-
   db:
     image: mysql:8.0
     container_name: mysql-db
     restart: unless-stopped
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: devityDB
-    ports:
-      - "3306:3306"
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test1234
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - my-network
+    command: --default-authentication-plugin=mysql_native_password
 
 volumes:
   mysql-data:
