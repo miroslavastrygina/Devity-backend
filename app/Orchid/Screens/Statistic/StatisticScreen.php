@@ -3,10 +3,9 @@
 namespace App\Orchid\Screens\Statistic;
 
 use Orchid\Screen\Screen;
-use App\Models\GroupMember;
 use App\Models\TestUserResult;
 use Orchid\Support\Facades\Layout;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Orchid\Layouts\Charts\ChartOne;
 use App\Orchid\Layouts\Charts\ChartTwo;
 use App\Orchid\Layouts\Charts\ChartThree;
@@ -20,18 +19,19 @@ class StatisticScreen extends Screen
      */
     public function query(): array
     {
-        // Получаем все результаты
-        $results = TestUserResult::all();
-
-        // Сортируем по дате
-        $sorted = $results->sortBy('created_at');
+        $results = Cache::remember('statistic_screen:test_user_results', now()->addMinutes(3), function () {
+            return TestUserResult::query()
+                ->select(['avg_percent', 'avg_points', 'created_at'])
+                ->orderBy('created_at')
+                ->get();
+        });
 
         // Массивы данных для line-графика
-        $labels = $sorted->map(function ($item, $key) {
+        $labels = $results->values()->map(function ($item, $key) {
             return $item->created_at->format('d.m.Y') . ' #' . $key;
         })->toArray();
-        $avgPercent = $sorted->pluck('avg_percent')->map(fn($val) => (float) $val)->toArray();
-        $avgPoints = $sorted->pluck('avg_points')->map(fn($val) => (float) $val)->toArray();
+        $avgPercent = $results->pluck('avg_percent')->map(fn($val) => (float) $val)->toArray();
+        $avgPoints = $results->pluck('avg_points')->map(fn($val) => (float) $val)->toArray();
 
 
         // Распределение по проценту для pie-графика

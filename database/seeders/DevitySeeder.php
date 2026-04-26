@@ -277,6 +277,9 @@ class DevitySeeder extends Seeder
         ];
 
         foreach ($lessons as $lesson) {
+            if (isset($lesson['content'])) {
+                $lesson['content'] = $this->normalizeMarkdownText($lesson['content']);
+            }
             Lesson::create($lesson);
         }
 
@@ -875,5 +878,13 @@ class DevitySeeder extends Seeder
         DB::table('sessions')->insert([
             ['id' => 'qmYdc5uTqvXFlZZxh3H755CJ9wdOUjRlaeh1edxz', 'user_id' => 1, 'ip_address' => '172.20.0.1', 'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0', 'payload' => 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiQ1hLY3dGWUUwUE1ZWm5HaGw5TkVQaHd0N2tpWDlJcXR1OGh0bWJoSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hZG1pbi9hc3NpZ25tZW50cy9jcmVhdGUiO31zOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE4OiJ0b2FzdF9ub3RpZmljYXRpb24iO2E6MDp7fX0=', 'last_activity' => 1751456496],
         ]);
+    }
+
+    private function normalizeMarkdownText(string $text): string
+    {
+        $normalized = str_replace(["\\r\\n", "\\n", "\\f"], ["\n", "\n", "\n"], $text);
+        $normalized = stripcslashes($normalized);
+
+        return str_replace(["\r\n", "\r"], "\n", $normalized);
     }
 }

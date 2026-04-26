@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Models\Achievement;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
 class AchievementUnlockedNotification extends Notification
@@ -22,7 +21,7 @@ class AchievementUnlockedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['database'];
     }
 
     /**
@@ -42,8 +41,4 @@ class AchievementUnlockedNotification extends Notification
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage($this->toArray($notifiable));
-    }
 }

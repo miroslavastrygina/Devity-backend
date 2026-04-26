@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\AchievementUnlocked;
 use App\Models\Achievement;
 use App\Models\AssignmentSubmission;
 use App\Models\TestUserResult;
@@ -51,6 +52,7 @@ class AchievementService
             ]);
 
             $user->notify(new AchievementUnlockedNotification($achievement));
+            broadcast(new AchievementUnlocked($userId, $achievement));
         }
     }
 

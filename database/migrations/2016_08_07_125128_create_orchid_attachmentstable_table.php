@@ -50,7 +50,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('attachmentable');
-        Schema::drop('attachments');
+        Schema::dropIfExists('attachmentable');
+        Schema::dropIfExists('attachments');
     }
 };
