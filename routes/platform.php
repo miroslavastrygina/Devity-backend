@@ -35,6 +35,8 @@ use App\Orchid\Screens\Teacher\TeacherAssignmentScreen;
 use App\Orchid\Screens\TestQuestion\TestQuestionScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\Teacher\AssignmentSubmissionScreen;
+use App\Orchid\Screens\Achievements\AchievementScreen;
+use App\Orchid\Screens\Achievements\AchievementListScreen;
 use App\Orchid\Screens\TestQuestion\TestQuestionListScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
 
@@ -222,6 +224,19 @@ Route::screen('/assignment-submissions', TeacherAssignmentScreen::class)
         ->parent('platform.index'));
 Route::screen('/assignment-submissions-view/{id}', AssignmentSubmissionScreen::class)
     ->name('platform.assignment-submissions-view')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+
+Route::screen('/achievements', AchievementListScreen::class)
+    ->name('platform.achievements')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/achievements/edit/{id}', AchievementScreen::class)
+    ->name('platform.achievements.edit')
+    ->breadcrumbs(fn(Trail $trail) => $trail
+        ->parent('platform.index'));
+Route::screen('/achievements/create', AchievementScreen::class)
+    ->name('platform.achievements.create')
     ->breadcrumbs(fn(Trail $trail) => $trail
         ->parent('platform.index'));
 // Route::screen('idea', Idea::class, 'platform.screens.idea');

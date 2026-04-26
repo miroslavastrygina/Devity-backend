@@ -12,6 +12,7 @@ class TestResultService
     public function __construct(
         protected TestQuestionService $testQuestionService,
         protected TestService $testService,
+        protected AchievementService $achievementService,
     ) {}
 
     public function index()
@@ -53,6 +54,8 @@ class TestResultService
             "avg_points" => round($avg_points, 2),
             "avg_percent" => round($avg_percent, 2)
         ]);
+
+        $this->achievementService->processAction($user_id, \App\Models\Achievement::ACTION_TEST_PASSED);
 
         // TestResult::insert($testResultData['question']);
 

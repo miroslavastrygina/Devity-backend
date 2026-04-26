@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\GroupMember;
+use App\Models\Achievement;
 use Orchid\Screen\AsSource;
 use App\Models\TestUserResult;
 use Orchid\Filters\Types\Like;
@@ -100,5 +101,12 @@ class User extends Authenticatable
     public function groupsTeach()
     {
         return $this->hasMany(Group::class, 'teacher_id');
+    }
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot('awarded_at')
+            ->withTimestamps();
     }
 }
