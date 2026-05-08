@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/var/www
+      - vendor:/var/www/vendor
     ports:
       - "8080:8080"
     depends_on:
@@ -31,6 +32,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/var/www
+      - vendor:/var/www/vendor
     depends_on:
       - db
     networks:
@@ -74,6 +76,7 @@ services:
 
 volumes:
   mysql-data:
+  vendor:
 
 networks:
   my-network:
