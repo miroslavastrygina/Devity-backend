@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('groups', function (Blueprint $table) {
-            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            if (!Schema::hasColumn('groups', 'teacher_id')) {
+                $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            }
         });
     }
 
@@ -22,8 +24,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('groups', function (Blueprint $table) {
-            $table->dropForeign(['teacher_id']);
-            $table->dropColumn('teacher_id');
+            if (Schema::hasColumn('groups', 'teacher_id')) {
+                $table->dropForeign(['teacher_id']);
+                $table->dropColumn('teacher_id');
+            }
         });
     }
 };

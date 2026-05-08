@@ -13,6 +13,10 @@ use App\Http\Requests\AssignmentSubmissionRequest;
 
 class AssignmentSubmissionService
 {
+    public function __construct(
+        private readonly AchievementService $achievementService
+    ) {}
+
     public function index()
     {
         return AssignmentSubmission::with(['assignment', 'user.groups'])
@@ -60,6 +64,7 @@ class AssignmentSubmissionService
             $validated['submitted_at'] = now();
 
             $submission = AssignmentSubmission::create($validated);
+            $this->achievementService->processAction($submission->user_id, \App\Models\Achievement::ACTION_ASSIGNMENT_SUBMITTED);
 
             return response()->json($submission);
         }

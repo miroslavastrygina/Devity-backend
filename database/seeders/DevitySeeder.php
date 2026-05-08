@@ -16,6 +16,7 @@ use App\Models\AssignmentSubmission;
 use App\Models\AssignmentGrade;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\Achievement;
 
 class DevitySeeder extends Seeder
 {
@@ -31,7 +32,7 @@ class DevitySeeder extends Seeder
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
                 'password' => '$2y$12$2Mgdte9g.OXl4Bjtp01Sfe47LcDOmRjC0LBOv0K9y99pEqiUn6C4.',
-                'permissions' => '{"platform.index": "1", "platform.blocks": "1", "platform.groups": "1", "platform.courses": "1", "platform.lessons": "1", "platform.statistics": "1", "platform.systems.roles": "1", "platform.systems.users": "1", "platform.systems.attachment": "1", "platform.assignment-submissions": "1"}',
+                'permissions' => '{"platform.index": "1", "platform.blocks": "1", "platform.groups": "1", "platform.courses": "1", "platform.lessons": "1", "platform.achievements": "1", "platform.statistics": "1", "platform.systems.roles": "1", "platform.systems.users": "1", "platform.systems.attachment": "1", "platform.assignment-submissions": "1"}',
                 'created_at' => '2025-06-30 06:31:36',
                 'updated_at' => '2025-07-01 17:48:16',
             ],
@@ -276,6 +277,9 @@ class DevitySeeder extends Seeder
         ];
 
         foreach ($lessons as $lesson) {
+            if (isset($lesson['content'])) {
+                $lesson['content'] = $this->normalizeMarkdownText($lesson['content']);
+            }
             Lesson::create($lesson);
         }
 
@@ -757,6 +761,57 @@ class DevitySeeder extends Seeder
             GroupMember::create($member);
         }
 
+        $achievements = [
+            [
+                'id' => 1,
+                'title' => 'Первый шаг',
+                'slug' => 'first-assignment-submission',
+                'description' => 'Сдай первое практическое задание',
+                'icon' => 'bi-flag',
+                'action_type' => Achievement::ACTION_ASSIGNMENT_SUBMITTED,
+                'condition_value' => 1,
+                'points' => 5,
+                'is_active' => true,
+            ],
+            [
+                'id' => 2,
+                'title' => 'Тест пройден',
+                'slug' => 'first-test-passed',
+                'description' => 'Пройди один тест на 70% и выше',
+                'icon' => 'bi-check-circle',
+                'action_type' => Achievement::ACTION_TEST_PASSED,
+                'condition_value' => 1,
+                'points' => 5,
+                'is_active' => true,
+            ],
+            [
+                'id' => 3,
+                'title' => 'Три практики',
+                'slug' => 'three-assignments-submitted',
+                'description' => 'Сдай 3 практических задания',
+                'icon' => 'bi-journal-check',
+                'action_type' => Achievement::ACTION_ASSIGNMENT_SUBMITTED,
+                'condition_value' => 3,
+                'points' => 10,
+                'is_active' => true,
+            ],
+            [
+                'id' => 4,
+                'title' => 'Первые оценки',
+                'slug' => 'two-assignments-graded',
+                'description' => 'Получи оценку за 2 задания',
+                'icon' => 'bi-award',
+                'action_type' => Achievement::ACTION_ASSIGNMENT_GRADED,
+                'condition_value' => 2,
+                'points' => 10,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($achievements as $achievement) {
+            Achievement::create($achievement);
+        }
+
         // Вставка кэша
         DB::table('cache')->insert([
             ['key' => 'devity_cache_412a22b0c80fea47c7a2ea2dda96bab6357db455', 'value' => 'i:1;', 'expiration' => 1751450201],
@@ -809,7 +864,7 @@ class DevitySeeder extends Seeder
 
         // Вставка ролей
         DB::table('roles')->insert([
-            ['id' => 1, 'slug' => 'admin', 'name' => 'Администратор', 'permissions' => '{"platform.index": "1", "platform.blocks": "1", "platform.groups": "1", "platform.courses": "1", "platform.lessons": "1", "platform.statistics": "1", "platform.systems.roles": "1", "platform.systems.users": "1", "platform.systems.attachment": "1", "platform.assignment-submissions": "1"}', 'created_at' => '2025-07-01 17:46:16', 'updated_at' => '2025-07-01 17:46:16'],
+            ['id' => 1, 'slug' => 'admin', 'name' => 'Администратор', 'permissions' => '{"platform.index": "1", "platform.blocks": "1", "platform.groups": "1", "platform.courses": "1", "platform.lessons": "1", "platform.achievements": "1", "platform.statistics": "1", "platform.systems.roles": "1", "platform.systems.users": "1", "platform.systems.attachment": "1", "platform.assignment-submissions": "1"}', 'created_at' => '2025-07-01 17:46:16', 'updated_at' => '2025-07-01 17:46:16'],
             ['id' => 2, 'slug' => 'teacher', 'name' => 'Учитель', 'permissions' => '{"platform.index": "0", "platform.blocks": "0", "platform.groups": "1", "platform.courses": "0", "platform.lessons": "0", "platform.statistics": "1", "platform.systems.roles": "0", "platform.systems.users": "0", "platform.systems.attachment": "1", "platform.assignment-submissions": "1"}', 'created_at' => '2025-07-01 17:46:34', 'updated_at' => '2025-07-02 07:05:45'],
         ]);
 
@@ -823,5 +878,13 @@ class DevitySeeder extends Seeder
         DB::table('sessions')->insert([
             ['id' => 'qmYdc5uTqvXFlZZxh3H755CJ9wdOUjRlaeh1edxz', 'user_id' => 1, 'ip_address' => '172.20.0.1', 'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0', 'payload' => 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiQ1hLY3dGWUUwUE1ZWm5HaGw5TkVQaHd0N2tpWDlJcXR1OGh0bWJoSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hZG1pbi9hc3NpZ25tZW50cy9jcmVhdGUiO31zOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE4OiJ0b2FzdF9ub3RpZmljYXRpb24iO2E6MDp7fX0=', 'last_activity' => 1751456496],
         ]);
+    }
+
+    private function normalizeMarkdownText(string $text): string
+    {
+        $normalized = str_replace(["\\r\\n", "\\n", "\\f"], ["\n", "\n", "\n"], $text);
+        $normalized = stripcslashes($normalized);
+
+        return str_replace(["\r\n", "\r"], "\n", $normalized);
     }
 }

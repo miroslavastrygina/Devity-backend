@@ -46,6 +46,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('journal-bookmark')
                 ->route('platform.lessons')
                 ->permission('platform.lessons'),
+            Menu::make('Ачивки')
+                ->icon('award')
+                ->route('platform.achievements')
+                ->permission('platform.achievements'),
             Menu::make('Группы')
                 ->icon('people')
                 ->route('platform.groups')
@@ -92,6 +96,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.courses', 'Курсы')
                 ->addPermission("platform.blocks", "Блоки")
                 ->addPermission("platform.lessons", "Уроки")
+                ->addPermission("platform.achievements", "Ачивки")
         ];
     }
 }

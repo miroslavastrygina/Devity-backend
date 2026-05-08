@@ -14,13 +14,17 @@ use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Orchid\Layouts\Teacher\GradeLayout;
+use App\Services\AchievementService;
 use App\Services\AssignmentSubmissionService;
 
 class AssignmentSubmissionScreen extends Screen
 {
     public $email;
     public $assignmentSubmission;
-    public function __construct(private readonly AssignmentSubmissionService $assignmentSubmissionService) {}
+    public function __construct(
+        private readonly AssignmentSubmissionService $assignmentSubmissionService,
+        private readonly AchievementService $achievementService
+    ) {}
     /**
      * Fetch data to be displayed on the screen.
      *
@@ -147,6 +151,10 @@ class AssignmentSubmissionScreen extends Screen
         AssignmentGrade::create($data);
         $this->assignmentSubmission->rated = true;
         $this->assignmentSubmission->save();
+        $this->achievementService->processAction(
+            $this->assignmentSubmission->user_id,
+            \App\Models\Achievement::ACTION_ASSIGNMENT_GRADED
+        );
 
         Toast::info("Задание проверено");
         return redirect()->route('platform.assignment-submissions');
