@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tests', function (Blueprint $table) {
-            $table->float('timer')->default(10);
+            if (!Schema::hasColumn('tests', 'timer')) {
+                $table->float('timer')->default(10);
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tests', function (Blueprint $table) {
-            $table->dropColumn('timer');
+            if (Schema::hasColumn('tests', 'timer')) {
+                $table->dropColumn('timer');
+            }
         });
     }
 };

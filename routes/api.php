@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\TestResultController;
@@ -107,5 +108,10 @@ Route::middleware('auth:sanctum')->group(function () {
             '/grades-by-student/{id}',
             'getGradesByStudent'
         );
+    });
+
+    Route::controller(AchievementController::class)->prefix('achievements')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
     });
 });

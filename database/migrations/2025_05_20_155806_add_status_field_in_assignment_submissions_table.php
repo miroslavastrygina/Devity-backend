@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('assignment_submissions', function (Blueprint $table) {
-            $table->boolean('rated')->default(false);
+            if (!Schema::hasColumn('assignment_submissions', 'rated')) {
+                $table->boolean('rated')->default(false);
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('assignment_submissions', function (Blueprint $table) {
-            $table->dropColumn('rated');
+            if (Schema::hasColumn('assignment_submissions', 'rated')) {
+                $table->dropColumn('rated');
+            }
         });
     }
 };
