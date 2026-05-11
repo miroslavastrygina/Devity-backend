@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -14,7 +12,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - my-network
     environment:
@@ -24,6 +23,13 @@ services:
       DB_DATABASE: devityDB
       DB_USERNAME: user
       DB_PASSWORD: test1234
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: devity-app
+      REVERB_APP_KEY: devity-key
+      REVERB_APP_SECRET: devity-secret
+      BROADCAST_REVERB_HOST: reverb
+      BROADCAST_REVERB_PORT: 8080
+      BROADCAST_REVERB_SCHEME: http
     command: php artisan serve --host=0.0.0.0 --port=8080
 
   reverb:
@@ -34,7 +40,8 @@ services:
       - ./:/var/www
       - vendor:/var/www/vendor
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - my-network
     ports:
@@ -46,6 +53,7 @@ services:
       DB_DATABASE: devityDB
       DB_USERNAME: user
       DB_PASSWORD: test1234
+      CACHE_STORE: array
       BROADCAST_CONNECTION: reverb
       REVERB_SERVER_HOST: 0.0.0.0
       REVERB_SERVER_PORT: 8080
@@ -72,6 +80,12 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - my-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     command: --default-authentication-plugin=mysql_native_password
 
 volumes:
