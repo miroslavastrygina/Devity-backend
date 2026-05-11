@@ -1,5 +1,24 @@
 <?php
 
+$runningInDocker = is_file('/.dockerenv') || is_file('/run/.containerenv');
+
+$reverbBroadcastHost = env('BROADCAST_REVERB_HOST');
+if ($reverbBroadcastHost === null || $reverbBroadcastHost === '') {
+    $reverbBroadcastHost = $runningInDocker ? 'reverb' : (string) env('REVERB_HOST', '127.0.0.1');
+}
+
+$reverbBroadcastPort = env('BROADCAST_REVERB_PORT');
+if ($reverbBroadcastPort === null || $reverbBroadcastPort === '') {
+    $reverbBroadcastPort = $runningInDocker ? 8080 : (int) env('REVERB_PORT', 8081);
+} else {
+    $reverbBroadcastPort = (int) $reverbBroadcastPort;
+}
+
+$reverbBroadcastScheme = env('BROADCAST_REVERB_SCHEME');
+if ($reverbBroadcastScheme === null || $reverbBroadcastScheme === '') {
+    $reverbBroadcastScheme = (string) env('REVERB_SCHEME', 'http');
+}
+
 return [
 
     /*
@@ -36,10 +55,10 @@ return [
             'secret' => env('REVERB_APP_SECRET'),
             'app_id' => env('REVERB_APP_ID'),
             'options' => [
-                'host' => env('REVERB_HOST'),
-                'port' => env('REVERB_PORT', 443),
-                'scheme' => env('REVERB_SCHEME', 'https'),
-                'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                'host' => $reverbBroadcastHost,
+                'port' => $reverbBroadcastPort,
+                'scheme' => $reverbBroadcastScheme,
+                'useTLS' => $reverbBroadcastScheme === 'https',
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
