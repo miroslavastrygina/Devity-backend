@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\MarkdownText;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Orchid\Screen\AsSource;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +16,14 @@ class TestQuestion extends Model
         'question',
         'answer'
     ];
+
+    protected function question(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => MarkdownText::normalize($value),
+            set: fn (?string $value) => MarkdownText::normalize($value),
+        );
+    }
 
     public function test()
     {
