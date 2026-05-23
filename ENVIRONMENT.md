@@ -58,6 +58,18 @@ docker compose exec app php artisan config:clear
 
 Переменные `VITE_*` вшиваются на этапе сборки: после изменения `.env` перезапустите `npm run dev` или пересоберите образ (`docker compose build`).
 
+## Блоки с компилятором C# в уроках
+
+1. В админке (Orchid) в уроке заполните **«Блоки компилятора (JSON)»** — массив вида:
+   ```json
+   [
+     { "code": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"Hi\");\n  }\n}" }
+   ]
+   ```
+2. В **markdown-контенте** вставьте маркеры `[[compiler:0]]`, `[[compiler:1]]`, … (индекс = позиция в JSON-массиве).
+3. В `.env` бэкенда задайте `JDOODLE_CLIENT_ID` и `JDOODLE_CLIENT_SECRET` (аккаунт и API dashboard на [JDoodle](https://www.jdoodle.com/docs/compiler-apis/jdoodle-api-quickstart/getting-started/)). При необходимости поправьте `JDOODLE_CSHARP_VERSION_INDEX` под вашу версию C# в JDoodle.
+4. Студент на странице урока запускает код кнопкой «Запустить»; запрос идёт на `POST /api/compiler/execute` (Sanctum), сервер вызывает JDoodle — ключи не попадают в браузер.
+
 ## Docker Compose и порты
 
 **Backend** (`Devity-backend/docker-compose.yml`):

@@ -13,8 +13,16 @@ class Lesson extends Model
         'title',
         'content',
         'block_id',
-        'video_url'
+        'video_url',
+        'compiler_blocks',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'compiler_blocks' => 'array',
+        ];
+    }
 
     public function block()
     {

@@ -33,7 +33,13 @@ class LessonScreen extends Screen
             $this->lesson = $this->lessonService->show($id);
         } else {
             $this->lesson = new Lesson();
+            $this->lesson->compiler_blocks = [];
         }
+
+        $this->lesson->setAttribute(
+            'compiler_blocks_json',
+            json_encode($this->lesson->compiler_blocks ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
 
         return [
             'lesson' => $this->lesson,

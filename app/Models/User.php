@@ -10,6 +10,7 @@ use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
 
@@ -48,9 +49,47 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'permissions'          => 'array',
-        'email_verified_at'    => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Normalize permissions: seeders sometimes pass JSON strings, which the array
+     * cast double-encodes and later surfaces as a string in Orchid's admin UI.
+     */
+    protected function permissions(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value): ?array {
+                if ($value === null) {
+                    return null;
+                }
+
+                while (is_string($value)) {
+                    $decoded = json_decode($value, true);
+
+                    if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
+                        return [];
+                    }
+
+                    $value = $decoded;
+                }
+
+                return is_array($value) ? $value : [];
+            },
+            set: function (mixed $value): ?string {
+                if ($value === null) {
+                    return null;
+                }
+
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    $value = is_array($decoded) ? $decoded : [];
+                }
+
+                return json_encode($value);
+            },
+        );
+    }
 
     /**
      * The attributes for which you can use filters in url.
