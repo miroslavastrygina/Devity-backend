@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\MarkdownText;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -282,7 +283,7 @@ class DevitySeeder extends Seeder
 
         foreach ($lessons as $lesson) {
             if (isset($lesson['content'])) {
-                $lesson['content'] = $this->normalizeMarkdownText($lesson['content']);
+                $lesson['content'] = MarkdownText::normalize($lesson['content']);
             }
 
             $this->applyLessonCompilerBlocks($lesson);
@@ -688,6 +689,10 @@ class DevitySeeder extends Seeder
         ];
 
         foreach ($assignments as $assignment) {
+            if (isset($assignment['description'])) {
+                $assignment['description'] = MarkdownText::normalize($assignment['description']);
+            }
+
             Assignment::create($assignment);
         }
 
@@ -1447,11 +1452,4 @@ CSHARP,
         ];
     }
 
-    private function normalizeMarkdownText(string $text): string
-    {
-        $normalized = str_replace(["\\r\\n", "\\n", "\\f"], ["\n", "\n", "\n"], $text);
-        $normalized = stripcslashes($normalized);
-
-        return str_replace(["\r\n", "\r"], "\n", $normalized);
-    }
 }
