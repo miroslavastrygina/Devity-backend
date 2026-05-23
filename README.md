@@ -9,6 +9,7 @@ Devity — это образовательная платформа для из�
 
 ## 📋 Содержание
 
+- [Переменные окружения](#переменные-окружения)
 - [Основные возможности](#основные-возможности)
 - [Технологический стек](#технологический-стек)
 - [Требования](#требования)
@@ -18,6 +19,12 @@ Devity — это образовательная платформа для из�
 - [Структура БД](#структура-бд)
 - [API документация](#api-документация)
 - [Полезные команды](#полезные-команды)
+
+---
+
+## Переменные окружения
+
+Полный перечень переменных — в [.env.example](.env.example). Пошаговая настройка `.env`, Docker, Reverb и связка с фронтендом — в **[ENVIRONMENT.md](ENVIRONMENT.md)**.
 
 ---
 
@@ -72,39 +79,10 @@ cd Devity-backend
 
 #### 2. Настройка окружения
 ```bash
-cp .env.example .env  # если нужно
-# или используйте существующий .env
+cp .env.example .env
 ```
 
-**Ключевые переменные в .env:**
-```env
-APP_NAME=Devity
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost
-
-# Database (Docker)
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=devityDB
-DB_USERNAME=user
-DB_PASSWORD=test1234
-
-# Locale
-APP_LOCALE=ru
-APP_FALLBACK_LOCALE=ru
-
-# Сессии
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-
-# Cache
-CACHE_STORE=database
-
-# Очереди
-QUEUE_CONNECTION=database
-```
+См. [.env.example](.env.example) и **[ENVIRONMENT.md](ENVIRONMENT.md)** (Reverb, `SANCTUM_STATEFUL_DOMAINS`, различие Docker / локальный MySQL).
 
 #### 3. Сборка и запуск контейнеров
 ```bash
@@ -116,7 +94,7 @@ docker compose up -d
 docker compose ps
 ```
 
-Должны быть 2 контейнера: `laravel-app` и `mysql-db`
+Должны быть контейнеры: `laravel-app`, `mysql-db`, `laravel-reverb` (см. `docker compose ps`).
 
 #### 4. Установка зависимостей
 ```bash
