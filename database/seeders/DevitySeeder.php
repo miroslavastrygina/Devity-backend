@@ -70,6 +70,10 @@ class DevitySeeder extends Seeder
         ];
 
         foreach ($users as $user) {
+            if (isset($user['permissions']) && is_string($user['permissions'])) {
+                $user['permissions'] = json_decode($user['permissions'], true, 512, JSON_THROW_ON_ERROR);
+            }
+
             User::create($user);
         }
 
@@ -280,6 +284,9 @@ class DevitySeeder extends Seeder
             if (isset($lesson['content'])) {
                 $lesson['content'] = $this->normalizeMarkdownText($lesson['content']);
             }
+
+            $this->applyLessonCompilerBlocks($lesson);
+
             Lesson::create($lesson);
         }
 
@@ -878,6 +885,566 @@ class DevitySeeder extends Seeder
         DB::table('sessions')->insert([
             ['id' => 'qmYdc5uTqvXFlZZxh3H755CJ9wdOUjRlaeh1edxz', 'user_id' => 1, 'ip_address' => '172.20.0.1', 'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0', 'payload' => 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiQ1hLY3dGWUUwUE1ZWm5HaGw5TkVQaHd0N2tpWDlJcXR1OGh0bWJoSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hZG1pbi9hc3NpZ25tZW50cy9jcmVhdGUiO31zOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE4OiJ0b2FzdF9ub3RpZmljYXRpb24iO2E6MDp7fX0=', 'last_activity' => 1751456496],
         ]);
+    }
+
+    /**
+     * Стартовый код в compiler_blocks и маркер [[compiler:0]] в markdown (все уроки).
+     */
+    private function applyLessonCompilerBlocks(array &$lesson): void
+    {
+        $presets = $this->lessonCompilerPresets();
+
+        $lessonId = $lesson['id'] ?? null;
+        if ($lessonId === null || ! isset($presets[$lessonId])) {
+            return;
+        }
+
+        $preset = $presets[$lessonId];
+        $lesson['compiler_blocks'] = [
+            ['code' => $preset['code']],
+        ];
+
+        if (! str_contains($lesson['content'] ?? '', '[[compiler:0]]')) {
+            $compilerSection = "\n\n## 💻 Попробуй в редакторе\n\n".$preset['hint']."\n\n[[compiler:0]]\n\n";
+            $lesson['content'] = str_replace(
+                "\n\n## ✅ Итоги",
+                $compilerSection.'## ✅ Итоги',
+                $lesson['content'],
+                $count
+            );
+
+            if ($count === 0) {
+                $lesson['content'] = str_replace(
+                    "\n\n## ✅ Результат",
+                    $compilerSection.'## ✅ Результат',
+                    $lesson['content'],
+                    $count
+                );
+            }
+
+            if ($count === 0) {
+                $lesson['content'] .= $compilerSection;
+            }
+        }
+    }
+
+    /**
+     * @return array<int, array{code: string, hint: string}>
+     */
+    private function lessonCompilerPresets(): array
+    {
+        return [
+            1 => [
+                'hint' => 'Измени значения переменных и запусти код — результат появится в консоли.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int coins = 100;
+        string name = "Player1";
+        bool isWinner = true;
+
+        Console.WriteLine(coins);
+        Console.WriteLine(name);
+        Console.WriteLine(isWinner);
+    }
+}
+CSHARP,
+            ],
+            2 => [
+                'hint' => 'Поэкспериментируй с `x` и `y`, затем нажми «Запустить».',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int x = 7;
+        int y = 4;
+        bool result = (x % y == 3) && (x > y);
+
+        Console.WriteLine("x = " + x + ", y = " + y);
+        Console.WriteLine("result = " + result);
+    }
+}
+CSHARP,
+            ],
+            3 => [
+                'hint' => 'Запусти цикл и посмотри, как меняется счётчик `i`.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine("Итерация: " + i);
+        }
+    }
+}
+CSHARP,
+            ],
+            4 => [
+                'hint' => 'Поменяй `score` и проверь, какое сообщение выведется.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int score = 80;
+
+        if (score >= 60)
+        {
+            Console.WriteLine("Тест пройден!");
+        }
+        else
+        {
+            Console.WriteLine("Попробуй ещё раз.");
+        }
+    }
+}
+CSHARP,
+            ],
+            5 => [
+                'hint' => 'Вызови метод с другим именем и посмотри на вывод.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine(Greet("Alex"));
+        Console.WriteLine("Сумма: " + Add(3, 5));
+    }
+
+    static string Greet(string name)
+    {
+        return "Привет, " + name + "!";
+    }
+
+    static int Add(int a, int b)
+    {
+        return a + b;
+    }
+}
+CSHARP,
+            ],
+            6 => [
+                'hint' => 'Запусти «приветствие» проекта Unity — в консоли увидишь версию и имя сцены.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string projectName = "MyFirstGame";
+        string unityVersion = "2022.3 LTS";
+        string sceneName = "SampleScene";
+
+        Console.WriteLine("Проект: " + projectName);
+        Console.WriteLine("Unity: " + unityVersion);
+        Console.WriteLine("Открыта сцена: " + sceneName);
+    }
+}
+CSHARP,
+            ],
+            7 => [
+                'hint' => 'Измени координаты объектов и посмотри, как меняется «сцена» в выводе.',
+                'code' => <<<'CSHARP'
+using System;
+
+class GameObject
+{
+    public string Name;
+    public float X, Y, Z;
+}
+
+class Program
+{
+    static void Main()
+    {
+        GameObject ground = new GameObject { Name = "Ground", X = 0, Y = 0, Z = 0 };
+        GameObject cube = new GameObject { Name = "Cube", X = 0, Y = 0.5f, Z = 2 };
+        GameObject sphere = new GameObject { Name = "Sphere", X = 2, Y = 1, Z = 0 };
+
+        PrintObject(ground);
+        PrintObject(cube);
+        PrintObject(sphere);
+    }
+
+    static void PrintObject(GameObject obj)
+    {
+        Console.WriteLine(obj.Name + ": (" + obj.X + ", " + obj.Y + ", " + obj.Z + ")");
+    }
+}
+CSHARP,
+            ],
+            8 => [
+                'hint' => 'Добавь новый «компонент» в список и запусти код.',
+                'code' => <<<'CSHARP'
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string objectName = "Cube";
+        var components = new List<string> { "Transform", "MeshRenderer", "BoxCollider" };
+
+        Console.WriteLine("GameObject: " + objectName);
+        Console.WriteLine("Компоненты:");
+        foreach (string component in components)
+        {
+            Console.WriteLine("  - " + component);
+        }
+
+        components.Add("Rigidbody");
+        Console.WriteLine("\nПосле Add Component:");
+        foreach (string component in components)
+        {
+            Console.WriteLine("  - " + component);
+        }
+    }
+}
+CSHARP,
+            ],
+            9 => [
+                'hint' => 'Поменяй RGB-значения материалов и запусти вывод цветов.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Material
+{
+    public string Name;
+    public int R, G, B;
+}
+
+class Program
+{
+    static void Main()
+    {
+        Material groundMat = new Material { Name = "GroundMat", R = 34, G = 139, B = 34 };
+        Material cubeMat = new Material { Name = "RedMat", R = 220, G = 20, B = 60 };
+        Material sphereMat = new Material { Name = "BlueMat", R = 30, G = 144, B = 255 };
+
+        PrintMaterial(groundMat);
+        PrintMaterial(cubeMat);
+        PrintMaterial(sphereMat);
+    }
+
+    static void PrintMaterial(Material mat)
+    {
+        Console.WriteLine(mat.Name + " RGB(" + mat.R + ", " + mat.G + ", " + mat.B + ")");
+    }
+}
+CSHARP,
+            ],
+            10 => [
+                'hint' => 'Измени позицию камеры и яркость света, затем запусти код.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        float camX = 0, camY = 8, camZ = -10;
+        float lightIntensity = 1.2f;
+        string lightColor = "белый";
+
+        Console.WriteLine("Main Camera position: (" + camX + ", " + camY + ", " + camZ + ")");
+        Console.WriteLine("Directional Light: intensity=" + lightIntensity + ", color=" + lightColor);
+
+        lightIntensity = 0.8f;
+        lightColor = "синий";
+        Console.WriteLine("\nPoint Light: intensity=" + lightIntensity + ", color=" + lightColor);
+    }
+}
+CSHARP,
+            ],
+            11 => [
+                'hint' => 'Запусти симуляцию движения — объект сдвигается каждый «кадр».',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        float positionZ = 0;
+        float speed = 2f;
+        float deltaTime = 0.16f;
+        float rotationY = 0;
+
+        for (int frame = 0; frame < 5; frame++)
+        {
+            positionZ += speed * deltaTime;
+            rotationY += 45 * deltaTime;
+            Console.WriteLine("Кадр " + frame + ": posZ=" + positionZ.ToString("F2") + ", rotY=" + rotationY.ToString("F1"));
+        }
+    }
+}
+CSHARP,
+            ],
+            12 => [
+                'hint' => 'Запусти код — префаб клонируется в «сцену» в разных позициях.',
+                'code' => <<<'CSHARP'
+using System;
+using System.Collections.Generic;
+
+class Enemy
+{
+    public string Name = "Enemy";
+    public int X, Z;
+}
+
+class Program
+{
+    static void Main()
+    {
+        Enemy prefab = new Enemy();
+        var spawned = new List<Enemy>();
+
+        int[] positionsX = { 0, 3, -2 };
+        int[] positionsZ = { 0, 5, 2 };
+
+        for (int i = 0; i < positionsX.Length; i++)
+        {
+            Enemy clone = new Enemy { Name = prefab.Name, X = positionsX[i], Z = positionsZ[i] };
+            spawned.Add(clone);
+            Console.WriteLine("Instantiate: " + clone.Name + " at (" + clone.X + ", 0, " + clone.Z + ")");
+        }
+
+        Console.WriteLine("Всего врагов на сцене: " + spawned.Count);
+    }
+}
+CSHARP,
+            ],
+            13 => [
+                'hint' => 'Нажми «Запустить» — симуляция кнопки UI в консоли.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static bool gameStarted = false;
+
+    static void Main()
+    {
+        Console.WriteLine("Canvas: главное меню");
+        Console.WriteLine("[ Кнопка: Начать игру ]");
+        OnStartButtonClick();
+    }
+
+    static void OnStartButtonClick()
+    {
+        gameStarted = true;
+        Console.WriteLine("\n>>> Кнопка нажата!");
+        Console.WriteLine(gameStarted ? "Игра запущена!" : "Ожидание...");
+    }
+}
+CSHARP,
+            ],
+            14 => [
+                'hint' => 'Запусти — увидишь параметры сборки, как в Build Settings.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string productName = "MyFirstGame";
+        string platform = "PC, Mac & Linux Standalone";
+        string sceneInBuild = "Assets/Scenes/Level1.unity";
+        bool developmentBuild = false;
+
+        Console.WriteLine("=== Build Settings ===");
+        Console.WriteLine("Product Name: " + productName);
+        Console.WriteLine("Platform: " + platform);
+        Console.WriteLine("Scene: " + sceneInBuild);
+        Console.WriteLine("Development Build: " + developmentBuild);
+        Console.WriteLine("\nBuild started... OK");
+        Console.WriteLine("Output: Builds/MyFirstGame.exe");
+    }
+}
+CSHARP,
+            ],
+            15 => [
+                'hint' => 'Измени размеры платформ и стен, затем запусти план уровня.',
+                'code' => <<<'CSHARP'
+using System;
+
+class LevelObject
+{
+    public string Name;
+    public float ScaleX, ScaleY, ScaleZ;
+    public float PosX, PosY, PosZ;
+}
+
+class Program
+{
+    static void Main()
+    {
+        LevelObject ground = new LevelObject { Name = "Ground", ScaleX = 20, ScaleY = 1, ScaleZ = 20, PosX = 0, PosY = 0, PosZ = 0 };
+        LevelObject platform = new LevelObject { Name = "Platform_1", ScaleX = 4, ScaleY = 0.5f, ScaleZ = 2, PosX = 0, PosY = 0.25f, PosZ = 4 };
+        LevelObject wall = new LevelObject { Name = "Wall_Left", ScaleX = 0.5f, ScaleY = 3, ScaleZ = 20, PosX = -10, PosY = 1.5f, PosZ = 0 };
+
+        PrintLevelObject(ground);
+        PrintLevelObject(platform);
+        PrintLevelObject(wall);
+        Console.WriteLine("\nУровень Level1 собран из примитивов.");
+    }
+
+    static void PrintLevelObject(LevelObject obj)
+    {
+        Console.WriteLine(obj.Name + " scale(" + obj.ScaleX + "," + obj.ScaleY + "," + obj.ScaleZ + ") pos(" + obj.PosX + "," + obj.PosY + "," + obj.PosZ + ")");
+    }
+}
+CSHARP,
+            ],
+            16 => [
+                'hint' => 'Поменяй offset камеры и smoothSpeed, запусти слежение за «игроком».',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        float playerX = 0, playerZ = 0;
+        float camX = 0, camY = 5, camZ = -10;
+        float offsetY = 5, offsetZ = -10;
+        float smoothSpeed = 0.5f;
+
+        for (int step = 0; step < 4; step++)
+        {
+            playerX += 1.5f;
+            playerZ += 0.5f;
+
+            float targetX = playerX;
+            float targetY = offsetY;
+            float targetZ = playerZ + offsetZ;
+
+            camX += (targetX - camX) * smoothSpeed;
+            camY += (targetY - camY) * smoothSpeed;
+            camZ += (targetZ - camZ) * smoothSpeed;
+
+            Console.WriteLine("Игрок: (" + playerX + ", 0, " + playerZ + ")");
+            Console.WriteLine("Камера: (" + camX.ToString("F1") + ", " + camY.ToString("F1") + ", " + camZ.ToString("F1") + ")");
+            Console.WriteLine();
+        }
+    }
+}
+CSHARP,
+            ],
+            17 => [
+                'hint' => 'Запусти сбор предметов — счёт увеличивается при каждом pickup.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int score = 0;
+        string[] pickups = { "Coin_1", "Coin_2", "Coin_3" };
+
+        Console.WriteLine("Счёт: " + score);
+
+        foreach (string pickup in pickups)
+        {
+            score++;
+            Console.WriteLine("Собран: " + pickup);
+            Console.WriteLine("Счёт: " + score);
+        }
+    }
+}
+CSHARP,
+            ],
+            18 => [
+                'hint' => 'Симуляция WASD: измени moveX/moveZ и запусти движение игрока.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        float posX = 0, posY = 1, velY = 0;
+        float speed = 5f;
+        bool isGrounded = true;
+        float jumpForce = 7f;
+
+        float[] inputsX = { 1, 1, 0, -1 };
+        float[] inputsZ = { 0, 1, 0, 0 };
+        bool[] jump = { false, false, true, false };
+
+        for (int i = 0; i < inputsX.Length; i++)
+        {
+            float moveX = inputsX[i];
+            float moveZ = inputsZ[i];
+            posX += moveX * speed * 0.16f;
+            posY = 1;
+
+            if (jump[i] && isGrounded)
+            {
+                velY = jumpForce;
+                isGrounded = false;
+                Console.WriteLine("Прыжок!");
+            }
+
+            Console.WriteLine("Input H=" + moveX + " V=" + moveZ + " -> pos(" + posX.ToString("F2") + ", " + posY + ", 0)");
+        }
+    }
+}
+CSHARP,
+            ],
+            19 => [
+                'hint' => 'Собери все предметы в коде — появится экран победы и перезапуск.',
+                'code' => <<<'CSHARP'
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int score = 0;
+        int totalPickups = 5;
+        bool winPanelVisible = false;
+
+        for (int i = 1; i <= totalPickups; i++)
+        {
+            score++;
+            Console.WriteLine("Собран предмет " + i + "/" + totalPickups + ". Счёт: " + score);
+        }
+
+        if (score >= totalPickups)
+        {
+            winPanelVisible = true;
+            Console.WriteLine("\n=== WIN PANEL ===");
+            Console.WriteLine("Вы победили!");
+            Console.WriteLine("[ Кнопка: Заново ]");
+            Console.WriteLine("RestartLevel() -> перезагрузка сцены");
+        }
+
+        Console.WriteLine("winPanel active: " + winPanelVisible);
+    }
+}
+CSHARP,
+            ],
+        ];
     }
 
     private function normalizeMarkdownText(string $text): string

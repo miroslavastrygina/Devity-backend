@@ -14,6 +14,7 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\TestQuestionController;
 use App\Http\Controllers\AssignmentSubmissionController;
+use App\Http\Controllers\CompilerController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -114,4 +115,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
     });
+
+    Route::post('/compiler/execute', [CompilerController::class, 'execute']);
 });
