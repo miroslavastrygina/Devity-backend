@@ -536,6 +536,10 @@ class DevitySeeder extends Seeder
         ];
 
         foreach ($testQuestions as $question) {
+            if (isset($question['question'])) {
+                $question['question'] = MarkdownText::normalize($question['question']);
+            }
+
             TestQuestion::create($question);
         }
 
